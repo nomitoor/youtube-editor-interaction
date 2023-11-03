@@ -2,8 +2,14 @@
 
 namespace Database\Seeders;
 
-// use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Enums\UserRolesEnum;
+use App\Models\Admin;
+use App\Models\AdminUpload;
+use App\Models\Editor;
+use App\Models\EditorUpload;
+use App\Models\Project;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
@@ -12,11 +18,22 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        $admin = Admin::create([
+            'name' => 'admin',
+            'email' => 'admin@mail.com',
+            'password' => Hash::make('password'),
+            'role' => UserRolesEnum::ADMIN->value,
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        $admin->projects()->saveMany(Project::factory()->count(10)->make());
+
+        $editor = Editor::create([
+            'name' => 'editor',
+            'email' => 'editor@mail.com',
+            'password' => Hash::make('password'),
+            'role' => UserRolesEnum::EDITOR->value,
+        ]);
+
+        $editor->projects()->saveMany(Project::factory()->count(10)->make());
     }
 }
